@@ -12,10 +12,12 @@ namespace Test
         {
 
             var perlinNoise = new PerlinNoise();
+            var perlinNoise2 = new PerlinNoisePermutation();
             var random = new Random();
 
             var useRandom = false;
 
+            var genIndex = 0;
 
             _ = Task.Run(() =>
             {
@@ -25,6 +27,12 @@ namespace Test
 
                     if (key.Key == ConsoleKey.Spacebar)
                         useRandom = !useRandom;
+
+
+                    genIndex++;
+                    if (genIndex > 2)
+                        genIndex = 0;
+
                 }
             });
 
@@ -33,9 +41,14 @@ namespace Test
             while (true)
             {
 
-                var r = useRandom
-                    ? random.NextDouble()
-                    : perlinNoise.Next(t);
+                var r = genIndex switch
+                {
+                    0 => perlinNoise.Next(t),
+                    1 => perlinNoise2.Next(t),
+                    2 => random.NextDouble(),
+                    _ => 0d,
+                };
+
 
                 var n = (int)(r * 100);
 
